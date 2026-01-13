@@ -1,4 +1,4 @@
-#include "comp_tasks/task_controller_component.hpp"
+#include "task_controller_component.hpp"
 
 namespace comp_tasks
 {
