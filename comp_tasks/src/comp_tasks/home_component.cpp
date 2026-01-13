@@ -1,5 +1,5 @@
 #include "comp_tasks/home_component.hpp"
-#include "comp_tasks/lib/bbox_calculations.hpp"
+#include "lib/bbox_calculations.hpp"
 
 using namespace std::chrono_literals;
 
