@@ -3,6 +3,7 @@
 #include <geographic_msgs/msg/geo_point_stamped.hpp>
 #include <geometry_msgs/msg/pose_stamped.hpp>
 #include <GeographicLib/LocalCartesian.hpp>
+#include "comp_tasks/utils/global_to_local.hpp"
 
 class GlobalToLocalConverter : public rclcpp::Node {
 public:

@@ -3,6 +3,7 @@
 #include <geometry_msgs/msg/pose_stamped.hpp>
 #include <GeographicLib/LocalCartesian.hpp>
 #include <comp_tasks_interfaces/msg/wp_group_info.hpp>
+#include "comp_tasks/utils/local_to_global.hpp"
 #include <fstream>
 #include <filesystem>
 namespace fs = std::filesystem;
