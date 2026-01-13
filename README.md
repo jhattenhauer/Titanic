@@ -38,3 +38,4 @@ Tracks previous path before starting detection, allowing the boat to get farther
 
 Control node that keeps track of what tasks to run
 Has a time limit on tasks and switches between them by publishing to the 'Active Task' topic, each task node will subscribe to this topic and only run when the core calls upon it.
+
