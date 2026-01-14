@@ -72,6 +72,9 @@ namespace comp_tasks
     p_tasks_.erase(0, 1);            // Remove the first letter
 
     switch (first_letter) {
+        case 'r':
+            node_name_ = "retracing";
+            break;
         case 'm':
             node_name_ = "maneuvering";
             break;

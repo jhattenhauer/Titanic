@@ -1,6 +1,6 @@
 #include <memory>
 
-#include "utils/retracing_component.hpp"
+#include "utils/retrace_component.hpp"
 #include "rclcpp/rclcpp.hpp"
 
 int main(int argc, char *argv[]) 
@@ -12,9 +12,9 @@ int main(int argc, char *argv[])
   rclcpp::executors::SingleThreadedExecutor exec;
   rclcpp::NodeOptions options;
 
-  auto mavros_retracing = std::make_shared<comp_tasks::MavRosRetracing>(options);
+  auto mavros_retrace = std::make_shared<comp_tasks::MavRosRetrace>(options);
   
-  exec.add_node(mavros_retracing->get_node_base_interface());
+  exec.add_node(mavros_retrace->get_node_base_interface());
   exec.spin();
 
   rclcpp::shutdown();

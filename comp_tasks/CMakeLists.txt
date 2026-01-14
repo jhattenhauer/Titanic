@@ -71,11 +71,58 @@ ament_target_dependencies(libbbox_calculations
 )
 
 # ----------------------------
-# Maneuvering component
+# Task components
 # ----------------------------
-add_library(maneuvering_component SHARED src/comp_tasks/maneuvering_component.cpp)
-target_compile_definitions(maneuvering_component PRIVATE "COMPOSITION_BUILDING_DLL")
-ament_target_dependencies(maneuvering_component
+add_library(task_component SHARED src/task_component.cpp)
+target_compile_definitions(task_component PRIVATE "COMPOSITION_BUILDING_DLL")
+ament_target_dependencies(task_component
+  rclcpp
+  rclcpp_components
+  std_msgs
+  mavros_msgs
+  sensor_msgs
+  geographic_msgs
+  comp_tasks_interfaces
+  yolov8_msgs
+  tf2
+  tf2_geometry_msgs
+  rclcpp_lifecycle
+)
+target_link_libraries(task_component yaml-cpp)
+install(TARGETS task_component
+  ARCHIVE DESTINATION lib
+  LIBRARY DESTINATION lib
+  RUNTIME DESTINATION bin
+)
+
+add_library(task_controller_component SHARED src/task_controller_component.cpp)
+target_compile_definitions(task_controller_component PRIVATE "COMPOSITION_BUILDING_DLL")
+ament_target_dependencies(task_controller_component
+  rclcpp
+  rclcpp_components
+  std_msgs
+  lifecycle_msgs
+)
+rclcpp_components_register_nodes(task_controller_component "comp_tasks::TaskController")
+install(TARGETS task_controller_component
+  ARCHIVE DESTINATION lib
+  LIBRARY DESTINATION lib
+  RUNTIME DESTINATION bin
+)
+
+add_executable(task_controller_composition src/task_controller_composition.cpp)
+ament_target_dependencies(task_controller_composition rclcpp)
+target_link_libraries(task_controller_composition
+  task_controller_component
+)
+install(TARGETS task_controller_composition DESTINATION lib/${PROJECT_NAME})
+
+# ----------------------------
+# Retrace components
+# ----------------------------
+add_library(retrace_component SHARED src/utils/retrace_component.cpp)
+target_compile_definitions(retrace_component PRIVATE "COMPOSITION_BUILDING_DLL")
+ament_target_dependencies(retrace_component
   rclcpp
   rclcpp_components
   std_msgs
@@ -88,23 +135,22 @@ ament_target_dependencies(maneuvering_component
   rclcpp_lifecycle
   yaml-cpp
 )
-rclcpp_components_register_nodes(maneuvering_component "comp_tasks::Maneuvering")
-install(TARGETS maneuvering_component
+rclcpp_components_register_nodes(retrace_component "comp_tasks::Retrace")
+install(TARGETS retrace_component
   ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib
   RUNTIME DESTINATION bin
 )
 
-add_executable(maneuvering_composition src/comp_tasks/maneuvering_composition.cpp)
-ament_target_dependencies(maneuvering_composition rclcpp)
-target_link_libraries(maneuvering_composition
-  maneuvering_component
+add_executable(retrace_composition src/utils/retrace_composition.cpp)
+ament_target_dependencies(retrace_composition rclcpp)
+target_link_libraries(retrace_composition
+  retrace_component
   task_component
   libtask_lib
-  libbbox_calculations
   yaml-cpp
 )
-install(TARGETS maneuvering_composition DESTINATION lib/${PROJECT_NAME})
+install(TARGETS retrace_composition DESTINATION lib/${PROJECT_NAME})
 
 # ----------------------------
 # Home component
@@ -141,6 +187,42 @@ target_link_libraries(home_composition
   yaml-cpp
 )
 install(TARGETS home_composition DESTINATION lib/${PROJECT_NAME})
+
+# ----------------------------
+# Maneuvering component
+# ----------------------------
+add_library(maneuvering_component SHARED src/comp_tasks/maneuvering_component.cpp)
+target_compile_definitions(maneuvering_component PRIVATE "COMPOSITION_BUILDING_DLL")
+ament_target_dependencies(maneuvering_component
+  rclcpp
+  rclcpp_components
+  std_msgs
+  mavros_msgs
+  geographic_msgs
+  comp_tasks_interfaces
+  yolov8_msgs
+  tf2
+  tf2_geometry_msgs
+  rclcpp_lifecycle
+  yaml-cpp
+)
+rclcpp_components_register_nodes(maneuvering_component "comp_tasks::Maneuvering")
+install(TARGETS maneuvering_component
+  ARCHIVE DESTINATION lib
+  LIBRARY DESTINATION lib
+  RUNTIME DESTINATION bin
+)
+
+add_executable(maneuvering_composition src/comp_tasks/maneuvering_composition.cpp)
+ament_target_dependencies(maneuvering_composition rclcpp)
+target_link_libraries(maneuvering_composition
+  maneuvering_component
+  task_component
+  libtask_lib
+  libbbox_calculations
+  yaml-cpp
+)
+install(TARGETS maneuvering_composition DESTINATION lib/${PROJECT_NAME})
 
 # ----------------------------
 # Speed component
@@ -213,53 +295,6 @@ target_link_libraries(mavros_repub_composition
   yaml-cpp
 )
 install(TARGETS mavros_repub_composition DESTINATION lib/${PROJECT_NAME})
-
-# ----------------------------
-# Task components
-# ----------------------------
-add_library(task_component SHARED src/task_component.cpp)
-target_compile_definitions(task_component PRIVATE "COMPOSITION_BUILDING_DLL")
-ament_target_dependencies(task_component
-  rclcpp
-  rclcpp_components
-  std_msgs
-  mavros_msgs
-  sensor_msgs
-  geographic_msgs
-  comp_tasks_interfaces
-  yolov8_msgs
-  tf2
-  tf2_geometry_msgs
-  rclcpp_lifecycle
-)
-target_link_libraries(task_component yaml-cpp)
-install(TARGETS task_component
-  ARCHIVE DESTINATION lib
-  LIBRARY DESTINATION lib
-  RUNTIME DESTINATION bin
-)
-
-add_library(task_controller_component SHARED src/task_controller_component.cpp)
-target_compile_definitions(task_controller_component PRIVATE "COMPOSITION_BUILDING_DLL")
-ament_target_dependencies(task_controller_component
-  rclcpp
-  rclcpp_components
-  std_msgs
-  lifecycle_msgs
-)
-rclcpp_components_register_nodes(task_controller_component "comp_tasks::TaskController")
-install(TARGETS task_controller_component
-  ARCHIVE DESTINATION lib
-  LIBRARY DESTINATION lib
-  RUNTIME DESTINATION bin
-)
-
-add_executable(task_controller_composition src/task_controller_composition.cpp)
-ament_target_dependencies(task_controller_composition rclcpp)
-target_link_libraries(task_controller_composition
-  task_controller_component
-)
-install(TARGETS task_controller_composition DESTINATION lib/${PROJECT_NAME})
 
 # ----------------------------
 # Global <-> Local executables
